@@ -20,10 +20,22 @@
 </template>
 
 <script lang="ts" setup>
+const auth = await useFetch("/api/login/refresh", { method: "POST" });
+
+watchEffect(() => {
+  if (!auth.error.value) {
+    navigateTo("/");
+  }
+});
+
 const state = ref({ email: "", password: "" });
 
 async function submit() {
-  const res = await $fetch('/api/login', {method: 'POST', body: JSON.stringify(state.value)})
-  console.log(res)
-};
+  const res = await $fetch("/api/login", {
+    method: "POST",
+    body: JSON.stringify(state.value),
+  });
+
+  auth.refresh();
+}
 </script>
